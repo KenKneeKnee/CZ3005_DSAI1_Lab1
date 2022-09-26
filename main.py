@@ -47,7 +47,8 @@ def ucs_budget(graph, dist, energy, start, goal, budget):
             goal_distance = get_distance(goal_path, dist)
             goal_path = '->'.join(goal_path)
             print(
-                f"Shortest path: {goal_path}.\n\nShortest distance: {goal_distance}.\nTotal energy cost: {e_cost}. \nExplored Nodes: {count}")
+                f"Shortest path: {goal_path}.\n\nShortest distance: {goal_distance}.\nTotal energy cost: {e_cost}. "
+                f"\nExplored Nodes: {count}")
             return
         for node in graph[curr_node]:
             if node not in explored:
@@ -85,7 +86,7 @@ def asearch(graph, dist, energy, start, goal, budget, coords):
                 if total_energy > budget:
                     break
                 gn = cost + dist[pair]
-                hn = euclidean_heuristic(coords[node], goal_coord)
+                hn = haversine_heuristic(coords[node], goal_coord)
                 fn = gn + hn
                 q.put((fn, total_energy, node, goal_path + [node]))
     # no path found
@@ -135,8 +136,8 @@ def haversine_heuristic(coord1, coord2):
     lat1 = lat1 / 1000000
     lon2 = lon2 / 1000000
     lat2 = lat2 / 1000000
-    dLat = radians(lat2 - lat1)  # why radians?
-    dLon = radians(lon2 - lon1)  # why radians?
+    dLat = radians(lat2 - lat1)
+    dLon = radians(lon2 - lon1)
 
     a = sin(dLat / 2) ** 2 + cos(lat1) * cos(lat2) * sin(dLon / 2) ** 2
     c = 2 * atan2(sqrt(a), sqrt(1 - a))
@@ -159,10 +160,15 @@ START_NODE = '1'
 GOAL_NODE = '50'
 ENERGY_LIMIT = 287932
 
-print("performing A* Search")
+
+print("UCS with enegry limit")
+start = time.time()
+ucs_budget(G, Dist, Cost, START_NODE, GOAL_NODE,ENERGY_LIMIT)
+print(f"time taken: {time.time() - start}")
+print("---------------------------------")
+
+print("A* Search")
 start = time.time()
 asearch(G, Dist, Cost, START_NODE, GOAL_NODE, ENERGY_LIMIT, Coord)
-print("time taken:")
-print(time.time() - start)
-
-ucs(G, Dist, Cost, START_NODE, GOAL_NODE)
+print(f"time taken: {time.time() - start}")
+print("---------------------------------")
