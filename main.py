@@ -41,7 +41,6 @@ def ucs_budget(graph, dist, energy, start, goal, budget):
     q.put((0, 0, start, [start]))
     explored = set()
     while not q.empty():
-        count += 1
         cost, e_cost, curr_node, goal_path = q.get()
         explored.add(curr_node)
         if curr_node == goal:
@@ -54,6 +53,7 @@ def ucs_budget(graph, dist, energy, start, goal, budget):
             return
         for node in graph[curr_node]:
             if node not in explored:
+                count += 1
                 pair = f'{curr_node},{node}'
                 total_cost = cost + dist[pair]
                 total_energy = e_cost + energy[pair]
