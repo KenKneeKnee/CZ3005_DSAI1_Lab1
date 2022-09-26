@@ -1,7 +1,7 @@
 import json
 import time
 from queue import PriorityQueue
-from math import radians, sin, cos, sqrt, atan2, atan, tan
+from math import radians, sin, cos, sqrt, atan2, atan, tan, acos
 
 '''
 Search Functions
@@ -140,12 +140,10 @@ def haversine_heuristic(coord1, coord2):
     lat1 = lat1 / 1000000
     lon2 = lon2 / 1000000
     lat2 = lat2 / 1000000
-    dLat = radians(lat2 - lat1)
-    dLon = radians(lon2 - lon1)
-
-    a = sin(dLat / 2) ** 2 + cos(lat1) * cos(lat2) * sin(dLon / 2) ** 2
-    c = 2 * atan2(sqrt(a), sqrt(1 - a))
-    return R * c
+    lon1, lat1, lon2, lat2 = map(radians, [lon1, lat1, lon2, lat2])
+    return 6371 * (
+        acos(sin(lat1) * sin(lat2) + cos(lat1) * cos(lat2) * cos(lon1 - lon2))
+    )
 
 
 '''
