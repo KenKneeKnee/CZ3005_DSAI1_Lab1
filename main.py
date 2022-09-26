@@ -73,7 +73,7 @@ def asearch(graph, dist, energy, start, goal, budget, coords):
     q.put((0, 0, start, [start]))
     explored = set()
     while not q.empty():
-        cost, e_cost, curr_node, goal_path = q.get()
+        d_cost, e_cost, curr_node, goal_path = q.get()
         explored.add(curr_node)
         # goal node is reached, print details
         if curr_node == goal:
@@ -89,7 +89,7 @@ def asearch(graph, dist, energy, start, goal, budget, coords):
                 total_energy = e_cost + energy[pair]
                 if total_energy > budget:
                     break
-                gn = cost + dist[pair]
+                gn = d_cost + dist[pair]
                 hn = haversine_heuristic(coords[node], goal_coord)
                 fn = gn + hn
                 q.put((fn, total_energy, node, goal_path + [node]))
