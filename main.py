@@ -1,13 +1,14 @@
 import json
 import time
 from queue import PriorityQueue
-from math import sqrt, radians, sin, cos, sqrt, atan2, atan, tan
+from math import radians, sin, cos, sqrt, atan2, atan, tan
 
 '''
 Search Functions
 '''
 
 
+# For task 1
 def ucs(graph, dist, energy, start, goal):
     count = 0
     q = PriorityQueue()
@@ -33,6 +34,7 @@ def ucs(graph, dist, energy, start, goal):
     return -1
 
 
+# For task 2
 def ucs_budget(graph, dist, energy, start, goal, budget):
     count = 0
     q = PriorityQueue()
@@ -59,9 +61,11 @@ def ucs_budget(graph, dist, energy, start, goal, budget):
                     break
                 q.put((total_cost, total_energy, node, goal_path + [node]))
     # no path found
+    print("Energy limit exceeded")
     return -1
 
 
+# For task 3
 def asearch(graph, dist, energy, start, goal, budget, coords):
     count = 0
     goal_coord = coords[goal]
@@ -71,7 +75,7 @@ def asearch(graph, dist, energy, start, goal, budget, coords):
     while not q.empty():
         cost, e_cost, curr_node, goal_path = q.get()
         explored.add(curr_node)
-        # goal node is reached
+        # goal node is reached, print details
         if curr_node == goal:
             goal_distance = get_distance(goal_path, dist)
             goal_path = '->'.join(goal_path)
@@ -80,7 +84,7 @@ def asearch(graph, dist, energy, start, goal, budget, coords):
             return
         for node in graph[curr_node]:
             if node not in explored:
-                count += 1  # Not necessary?
+                count += 1
                 pair = f'{curr_node},{node}'
                 total_energy = e_cost + energy[pair]
                 if total_energy > budget:
@@ -127,7 +131,7 @@ def euclidean_heuristic(coord1, coord2):
     return sqrt(dx ** 2 + dy ** 2)
 
 
-# returns the haversine distince between two cooridnates on Earth
+# returns the haversine distance between two coordinates on Earth
 def haversine_heuristic(coord1, coord2):
     R = 6371
     (lon1, lat1) = coord1
@@ -160,10 +164,9 @@ START_NODE = '1'
 GOAL_NODE = '50'
 ENERGY_LIMIT = 287932
 
-
 print("UCS with enegry limit")
 start = time.time()
-ucs_budget(G, Dist, Cost, START_NODE, GOAL_NODE,ENERGY_LIMIT)
+ucs_budget(G, Dist, Cost, START_NODE, GOAL_NODE, ENERGY_LIMIT)
 print(f"time taken: {time.time() - start}")
 print("---------------------------------")
 
