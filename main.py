@@ -19,10 +19,12 @@ def ucs(graph, dist, energy, start, goal):
         explored.add(curr_node)
         if curr_node == goal:
             # goal found!
-            # goal_distance = get_distance(goal_path,dist)
+            goal_distance = get_distance(goal_path, dist)  # this was commented out?
             goal_e_cost = get_energy(goal_path, energy)
             goal_path = '->'.join(goal_path)
-            print(f"Shortest path: {goal_path}.\n\nShortest distance: {cost}.\nTotal Expansions: {count}")
+            print(
+                f"Shortest path: {goal_path}.\n\nShortest distance: {goal_distance}.\nTotal energy cost: {goal_e_cost}. "
+                f"\nExplored Nodes: {count}")
             return
         for node in graph[curr_node]:  # expand nodes, eg: curr_node = 1
             if node not in explored:
@@ -32,6 +34,34 @@ def ucs(graph, dist, energy, start, goal):
                 q.put((total_cost, node, goal_path + [node]))
     # no path found
     return -1
+
+
+# For testing of heuristics
+def asearch(graph, dist, energy, start, goal, coords, heuristic):
+    count = 0
+    goal_coord = coords[goal]
+    q = PriorityQueue()
+    q.put((0, start, [start]))
+    explored = set()
+    while not q.empty():
+        cost, curr_node, goal_path = q.get()
+        explored.add(curr_node)
+        if curr_node == goal:
+            goal_distance = get_distance(goal_path, dist)
+            goal_e_cost = get_energy(goal_path, energy)
+            goal_path = '->'.join(goal_path)
+            print(
+                f"Shortest path: {goal_path}.\n\nShortest distance: {goal_distance}.\nTotal energy cost: {goal_e_cost}. "
+                f"\nExplored Nodes: {count}")
+            return
+        for node in graph[curr_node]:
+            if node not in explored:
+                count += 1
+                pair = f'{curr_node},{node}'
+                gn = cost + dist[pair]
+                hn = heuristic(coords[node], goal_coord)
+                fn = gn + hn
+                q.put((fn, node, goal_path + [node]))
 
 
 # For task 2
@@ -66,7 +96,7 @@ def ucs_budget(graph, dist, energy, start, goal, budget):
 
 
 # For task 3
-def asearch(graph, dist, energy, start, goal, budget, coords):
+def asearch_budget(graph, dist, energy, start, goal, budget, coords,hw, heuristic):
     count = 0
     goal_coord = coords[goal]
     q = PriorityQueue()
@@ -80,7 +110,8 @@ def asearch(graph, dist, energy, start, goal, budget, coords):
             goal_distance = get_distance(goal_path, dist)
             goal_path = '->'.join(goal_path)
             print(
-                f"Shortest path: {goal_path}.\n\nShortest distance: {goal_distance}.\nTotal energy cost: {e_cost}. \nExplored Nodes: {count}")
+                f"Shortest path: {goal_path}.\n\nShortest distance: {goal_distance}.\nTotal energy cost: {e_cost}. "
+                f"\nExplored Nodes: {count}")
             return
         for node in graph[curr_node]:
             if node not in explored:
@@ -90,8 +121,8 @@ def asearch(graph, dist, energy, start, goal, budget, coords):
                 if total_energy > budget:
                     break
                 gn = d_cost + dist[pair]
-                hn = haversine_heuristic(coords[node], goal_coord)
-                fn = gn + hn
+                hn = heuristic(coords[node], goal_coord)
+                fn = gn + hw*hn
                 q.put((fn, total_energy, node, goal_path + [node]))
     # no path found
     print("Energy limit exceeded")
@@ -112,7 +143,7 @@ def get_distance(path, dist):
     return distance
 
 
-# returns the total energy count of a given path
+# returns the total energy cost of a given path
 def get_energy(path, cost):
     e_cost = 0
     for i in range(0, len(path) - 1):
@@ -122,7 +153,7 @@ def get_energy(path, cost):
 
 
 # returns the euclidean distance between two points
-def euclidean_heuristic(coord1, coord2):
+def euclidean(coord1, coord2):
     (lon1, lat1) = coord1
     (lon2, lat2) = coord2
 
@@ -132,7 +163,7 @@ def euclidean_heuristic(coord1, coord2):
 
 
 # returns the haversine distance between two coordinates on Earth
-def haversine_heuristic(coord1, coord2):
+def haversine(coord1, coord2):
     R = 6371
     (lon1, lat1) = coord1
     (lon2, lat2) = coord2
@@ -144,6 +175,18 @@ def haversine_heuristic(coord1, coord2):
     return 6371 * (
         acos(sin(lat1) * sin(lat2) + cos(lat1) * cos(lat2) * cos(lon1 - lon2))
     )
+
+# returns the manhattan distance between two coordinates on Earth
+def manhattan(coord1, coord2):
+    (lon1,lat1) = coord1
+    (lon2,lat2) = coord2
+
+    lon1 = lon1/1000000
+    lat1 = lat1/1000000
+    lon2 = lon2/1000000
+    lat2 = lat2/1000000
+
+    return abs(lon1 - lon2) + abs(lat1 - lat2)
 
 
 '''
@@ -162,14 +205,56 @@ START_NODE = '1'
 GOAL_NODE = '50'
 ENERGY_LIMIT = 287932
 
-print("UCS with enegry limit")
+print("UCS")
+start = time.time()
+ucs(G, Dist, Cost, START_NODE, GOAL_NODE)
+print(f"time taken: {time.time() - start}")
+print("---------------------------------")
+
+print("A* Search(haversine)")
+start = time.time()
+asearch(G, Dist, Cost, START_NODE, GOAL_NODE, Coord, haversine)
+print(f"time taken: {time.time() - start}")
+print("---------------------------------")
+
+print("A* Search(euclidean)")
+start = time.time()
+asearch(G, Dist, Cost, START_NODE, GOAL_NODE, Coord, euclidean)
+print(f"time taken: {time.time() - start}")
+print("---------------------------------")
+
+print("A* Search(manhattan)")
+start = time.time()
+asearch(G, Dist, Cost, START_NODE, GOAL_NODE, Coord, manhattan)
+print(f"time taken: {time.time() - start}")
+print("---------------------------------")
+
+print("UCS with energy limit")
 start = time.time()
 ucs_budget(G, Dist, Cost, START_NODE, GOAL_NODE, ENERGY_LIMIT)
 print(f"time taken: {time.time() - start}")
 print("---------------------------------")
 
-print("A* Search")
+print("A* Search with energy limit")
 start = time.time()
-asearch(G, Dist, Cost, START_NODE, GOAL_NODE, ENERGY_LIMIT, Coord)
+asearch_budget(G, Dist, Cost, START_NODE, GOAL_NODE, ENERGY_LIMIT, Coord,1,haversine)
+print(f"time taken: {time.time() - start}")
+print("---------------------------------")
+
+print("A* Search with energy limit (0.8)")
+start = time.time()
+asearch_budget(G, Dist, Cost, START_NODE, GOAL_NODE, ENERGY_LIMIT, Coord,0.8,haversine)
+print(f"time taken: {time.time() - start}")
+print("---------------------------------")
+
+print("A* Search with energy limit(0.6)")
+start = time.time()
+asearch_budget(G, Dist, Cost, START_NODE, GOAL_NODE, ENERGY_LIMIT, Coord,0.6,haversine)
+print(f"time taken: {time.time() - start}")
+print("---------------------------------")
+
+print("A* Search with energy limit(0.4)")
+start = time.time()
+asearch_budget(G, Dist, Cost, START_NODE, GOAL_NODE, ENERGY_LIMIT, Coord,0.4,haversine)
 print(f"time taken: {time.time() - start}")
 print("---------------------------------")
