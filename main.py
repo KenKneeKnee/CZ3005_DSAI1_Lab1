@@ -87,9 +87,8 @@ def ucs_budget(graph, dist, energy, start, goal, budget):
                 pair = f'{curr_node},{node}'
                 total_cost = cost + dist[pair]
                 total_energy = e_cost + energy[pair]
-                if total_energy > budget:
-                    break
-                pq.put((total_cost, total_energy, node, goal_path + [node]))
+                if total_energy <= budget:
+                    pq.put((total_cost, total_energy, node, goal_path + [node]))
     # no path found
     print("Energy limit exceeded")
     return -1
@@ -118,12 +117,11 @@ def astar_budget(graph, dist, energy, start, goal, budget, coords, hw, heuristic
                 count += 1
                 pair = f'{curr_node},{node}'
                 total_energy = e_cost + energy[pair]
-                if total_energy > budget:
-                    break
-                gn = d_cost + dist[pair]
-                hn = heuristic(coords[node], goal_coord)
-                fn = gn + hw * hn
-                pq.put((fn, total_energy, node, goal_path + [node]))
+                if total_energy <= budget:
+                    gn = d_cost + dist[pair]
+                    hn = heuristic(coords[node], goal_coord)
+                    fn = gn + hw * hn
+                    pq.put((fn, total_energy, node, goal_path + [node]))
     # no path found
     print("Energy limit exceeded")
     return -1
