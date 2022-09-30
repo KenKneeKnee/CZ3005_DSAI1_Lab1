@@ -160,7 +160,7 @@ def euclidean(p1, p2):
     return sqrt(dx ** 2 + dy ** 2)
 
 
-# returns the haversine distance between two coordinates on Earth
+# returns the haversine (great circle) distance between two coordinates on Earth
 def haversine(p1, p2):
     (lon1, lat1) = p1
     (lon2, lat2) = p2
