@@ -14,7 +14,7 @@ def ucs(graph, dist, energy, start, goal):
     pq = PriorityQueue()
     pq.put((0, start, [start]))  # store starting state, cost = 0, node = start, [path]
     explored = set()
-    while not pq.empty():
+    while pq:
         cost, curr_node, goal_path = pq.get()  # priority queue returns item-in-queue with smallest value
         explored.add(curr_node)
         if curr_node == goal:
@@ -43,7 +43,7 @@ def astar(graph, dist, energy, start, goal, coords, heuristic):
     pq = PriorityQueue()
     pq.put((0, start, [start]))
     explored = set()
-    while not pq.empty():
+    while pq:
         cost, curr_node, goal_path = pq.get()
         explored.add(curr_node)
         if curr_node == goal:
@@ -70,7 +70,7 @@ def ucs_budget(graph, dist, energy, start, goal, budget):
     pq = PriorityQueue()
     pq.put((0, 0, start, [start]))
     explored = set()
-    while not pq.empty():
+    while pq:
         cost, e_cost, curr_node, goal_path = pq.get()
         explored.add(curr_node)
         if curr_node == goal:
@@ -102,7 +102,7 @@ def astar_budget(graph, dist, energy, start, goal, budget, coords, hw, heuristic
     pq = PriorityQueue()
     pq.put((0, 0, start, [start]))
     explored = set()
-    while not pq.empty():
+    while pq:
         d_cost, e_cost, curr_node, goal_path = pq.get()
         explored.add(curr_node)
         # goal node is reached, print details
@@ -206,7 +206,7 @@ with open('Cost.json') as json_file:
 print("Files Read")
 
 START_NODE = '1'
-GOAL_NODE = '100'
+GOAL_NODE = '50'
 ENERGY_LIMIT = 287932
 
 # Task results
@@ -214,52 +214,52 @@ print("UCS")
 start = time.time()
 ucs(G, Dist, Cost, START_NODE, GOAL_NODE)
 print(f"time taken: {time.time() - start}")
-print("---------------------------------")
+print("---------------------------------------------------")
 
 print("A* Search(haversine)")
 start = time.time()
 astar(G, Dist, Cost, START_NODE, GOAL_NODE, Coord, haversine)
 print(f"time taken: {time.time() - start}")
-print("---------------------------------")
+print("---------------------------------------------------")
 
 print("A* Search(euclidean)")
 start = time.time()
 astar(G, Dist, Cost, START_NODE, GOAL_NODE, Coord, euclidean)
 print(f"time taken: {time.time() - start}")
-print("---------------------------------")
+print("---------------------------------------------------")
 
 print("A* Search(manhattan)")
 start = time.time()
 astar(G, Dist, Cost, START_NODE, GOAL_NODE, Coord, manhattan)
 print(f"time taken: {time.time() - start}")
-print("---------------------------------")
+print("---------------------------------------------------")
 
 print("UCS with energy limit")
 start = time.time()
 ucs_budget(G, Dist, Cost, START_NODE, GOAL_NODE, ENERGY_LIMIT)
 print(f"time taken: {time.time() - start}")
-print("---------------------------------")
+print("---------------------------------------------------")
 
 print("A* Search with energy limit")
 start = time.time()
 astar_budget(G, Dist, Cost, START_NODE, GOAL_NODE, ENERGY_LIMIT, Coord, 1, haversine)
 print(f"time taken: {time.time() - start}")
-print("---------------------------------")
+print("---------------------------------------------------")
 
 print("A* Search with energy limit (0.8)")
 start = time.time()
 astar_budget(G, Dist, Cost, START_NODE, GOAL_NODE, ENERGY_LIMIT, Coord, 0.8, haversine)
 print(f"time taken: {time.time() - start}")
-print("---------------------------------")
+print("---------------------------------------------------")
 
 print("A* Search with energy limit(0.6)")
 start = time.time()
 astar_budget(G, Dist, Cost, START_NODE, GOAL_NODE, ENERGY_LIMIT, Coord, 0.6, haversine)
 print(f"time taken: {time.time() - start}")
-print("---------------------------------")
+print("---------------------------------------------------")
 
 print("A* Search with energy limit(0.4)")
 start = time.time()
 astar_budget(G, Dist, Cost, START_NODE, GOAL_NODE, ENERGY_LIMIT, Coord, 0.4, haversine)
 print(f"time taken: {time.time() - start}")
-print("---------------------------------")
+print("---------------------------------------------------")
