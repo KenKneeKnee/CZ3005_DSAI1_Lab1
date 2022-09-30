@@ -11,11 +11,11 @@ Search Functions
 # For task 1
 def ucs(graph, dist, energy, start, goal):
     count = 0
-    q = PriorityQueue()
-    q.put((0, start, [start]))  # store starting state, cost = 0, node = start, [path]
+    pq = PriorityQueue()
+    pq.put((0, start, [start]))  # store starting state, cost = 0, node = start, [path]
     explored = set()
-    while not q.empty():
-        cost, curr_node, goal_path = q.get()  # priority queue returns item-in-queue with smallest value
+    while not pq.empty():
+        cost, curr_node, goal_path = pq.get()  # priority queue returns item-in-queue with smallest value
         explored.add(curr_node)
         if curr_node == goal:
             # goal found!
@@ -31,7 +31,7 @@ def ucs(graph, dist, energy, start, goal):
                 count += 1
                 pair = f'{curr_node},{node}'  # eg: pair = '1,2', cost from 1->2
                 total_cost = cost + dist[pair]  # cumulative cost + cost(curr_node->neighbour_node)
-                q.put((total_cost, node, goal_path + [node]))
+                pq.put((total_cost, node, goal_path + [node]))
     # no path found
     return -1
 
@@ -40,11 +40,11 @@ def ucs(graph, dist, energy, start, goal):
 def astar(graph, dist, energy, start, goal, coords, heuristic):
     count = 0
     goal_coord = coords[goal]
-    q = PriorityQueue()
-    q.put((0, start, [start]))
+    pq = PriorityQueue()
+    pq.put((0, start, [start]))
     explored = set()
-    while not q.empty():
-        cost, curr_node, goal_path = q.get()
+    while not pq.empty():
+        cost, curr_node, goal_path = pq.get()
         explored.add(curr_node)
         if curr_node == goal:
             goal_distance = get_distance(goal_path, dist)
@@ -61,17 +61,17 @@ def astar(graph, dist, energy, start, goal, coords, heuristic):
                 gn = cost + dist[pair]
                 hn = heuristic(coords[node], goal_coord)
                 fn = gn + hn
-                q.put((fn, node, goal_path + [node]))
+                pq.put((fn, node, goal_path + [node]))
 
 
 # For task 2
 def ucs_budget(graph, dist, energy, start, goal, budget):
     count = 0
-    q = PriorityQueue()
-    q.put((0, 0, start, [start]))
+    pq = PriorityQueue()
+    pq.put((0, 0, start, [start]))
     explored = set()
-    while not q.empty():
-        cost, e_cost, curr_node, goal_path = q.get()
+    while not pq.empty():
+        cost, e_cost, curr_node, goal_path = pq.get()
         explored.add(curr_node)
         if curr_node == goal:
             # goal found!
@@ -89,7 +89,7 @@ def ucs_budget(graph, dist, energy, start, goal, budget):
                 total_energy = e_cost + energy[pair]
                 if total_energy > budget:
                     break
-                q.put((total_cost, total_energy, node, goal_path + [node]))
+                pq.put((total_cost, total_energy, node, goal_path + [node]))
     # no path found
     print("Energy limit exceeded")
     return -1
@@ -99,11 +99,11 @@ def ucs_budget(graph, dist, energy, start, goal, budget):
 def astar_budget(graph, dist, energy, start, goal, budget, coords, hw, heuristic):
     count = 0
     goal_coord = coords[goal]
-    q = PriorityQueue()
-    q.put((0, 0, start, [start]))
+    pq = PriorityQueue()
+    pq.put((0, 0, start, [start]))
     explored = set()
-    while not q.empty():
-        d_cost, e_cost, curr_node, goal_path = q.get()
+    while not pq.empty():
+        d_cost, e_cost, curr_node, goal_path = pq.get()
         explored.add(curr_node)
         # goal node is reached, print details
         if curr_node == goal:
@@ -122,8 +122,8 @@ def astar_budget(graph, dist, energy, start, goal, budget, coords, hw, heuristic
                     break
                 gn = d_cost + dist[pair]
                 hn = heuristic(coords[node], goal_coord)
-                fn = gn + hw*hn
-                q.put((fn, total_energy, node, goal_path + [node]))
+                fn = gn + hw * hn
+                pq.put((fn, total_energy, node, goal_path + [node]))
     # no path found
     print("Energy limit exceeded")
     return -1
@@ -175,15 +175,16 @@ def haversine(p1, p2):
         acos(sin(lat1) * sin(lat2) + cos(lat1) * cos(lat2) * cos(lon1 - lon2))
     )
 
+
 # returns the manhattan distance between two points
 def manhattan(p1, p2):
-    (lon1,lat1) = p1
-    (lon2,lat2) = p2
+    (lon1, lat1) = p1
+    (lon2, lat2) = p2
 
-    lon1 = lon1/1000000
-    lat1 = lat1/1000000
-    lon2 = lon2/1000000
-    lat2 = lat2/1000000
+    lon1 = lon1 / 1000000
+    lat1 = lat1 / 1000000
+    lon2 = lon2 / 1000000
+    lat2 = lat2 / 1000000
 
     return abs(lon1 - lon2) + abs(lat1 - lat2)
 
@@ -205,7 +206,7 @@ with open('Cost.json') as json_file:
 print("Files Read")
 
 START_NODE = '1'
-GOAL_NODE = '50'
+GOAL_NODE = '100'
 ENERGY_LIMIT = 287932
 
 # Task results
