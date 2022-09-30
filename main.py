@@ -205,6 +205,7 @@ with open('Cost.json') as json_file:
     Cost = json.load(json_file)
 print("Files Read")
 
+# Parameters
 START_NODE = '1'
 GOAL_NODE = '50'
 ENERGY_LIMIT = 287932
