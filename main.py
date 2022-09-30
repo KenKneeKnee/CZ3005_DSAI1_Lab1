@@ -37,7 +37,7 @@ def ucs(graph, dist, energy, start, goal):
 
 
 # For testing of heuristics
-def asearch(graph, dist, energy, start, goal, coords, heuristic):
+def astar(graph, dist, energy, start, goal, coords, heuristic):
     count = 0
     goal_coord = coords[goal]
     q = PriorityQueue()
@@ -96,7 +96,7 @@ def ucs_budget(graph, dist, energy, start, goal, budget):
 
 
 # For task 3
-def asearch_budget(graph, dist, energy, start, goal, budget, coords, hw, heuristic):
+def astar_budget(graph, dist, energy, start, goal, budget, coords, hw, heuristic):
     count = 0
     goal_coord = coords[goal]
     q = PriorityQueue()
@@ -130,7 +130,7 @@ def asearch_budget(graph, dist, energy, start, goal, budget, coords, hw, heurist
 
 
 '''
-Utility Functions
+Utility and Heuristic Functions
 '''
 
 
@@ -153,9 +153,9 @@ def get_energy(path, cost):
 
 
 # returns the euclidean distance between two points
-def euclidean(coord1, coord2):
-    (lon1, lat1) = coord1
-    (lon2, lat2) = coord2
+def euclidean(p1, p2):
+    (lon1, lat1) = p1
+    (lon2, lat2) = p2
 
     dx = abs(lon1 / 1000000 - lon2 / 1000000)
     dy = abs(lat1 / 1000000 - lat2 / 1000000)
@@ -163,10 +163,9 @@ def euclidean(coord1, coord2):
 
 
 # returns the haversine distance between two coordinates on Earth
-def haversine(coord1, coord2):
-    R = 6371
-    (lon1, lat1) = coord1
-    (lon2, lat2) = coord2
+def haversine(p1, p2):
+    (lon1, lat1) = p1
+    (lon2, lat2) = p2
     lon1 = lon1 / 1000000
     lat1 = lat1 / 1000000
     lon2 = lon2 / 1000000
@@ -177,9 +176,9 @@ def haversine(coord1, coord2):
     )
 
 # returns the manhattan distance between two points
-def manhattan(coord1, coord2):
-    (lon1,lat1) = coord1
-    (lon2,lat2) = coord2
+def manhattan(p1, p2):
+    (lon1,lat1) = p1
+    (lon2,lat2) = p2
 
     lon1 = lon1/1000000
     lat1 = lat1/1000000
@@ -192,6 +191,9 @@ def manhattan(coord1, coord2):
 '''
 Main Program
 '''
+
+# File reading
+print("Reading Files...")
 with open('G.json') as json_file:
     G = json.load(json_file)
 with open('Coord.json') as json_file:
@@ -200,11 +202,13 @@ with open('Dist.json') as json_file:
     Dist = json.load(json_file)
 with open('Cost.json') as json_file:
     Cost = json.load(json_file)
+print("Files Read")
 
 START_NODE = '1'
 GOAL_NODE = '50'
 ENERGY_LIMIT = 287932
 
+# Task results
 print("UCS")
 start = time.time()
 ucs(G, Dist, Cost, START_NODE, GOAL_NODE)
@@ -213,19 +217,19 @@ print("---------------------------------")
 
 print("A* Search(haversine)")
 start = time.time()
-asearch(G, Dist, Cost, START_NODE, GOAL_NODE, Coord, haversine)
+astar(G, Dist, Cost, START_NODE, GOAL_NODE, Coord, haversine)
 print(f"time taken: {time.time() - start}")
 print("---------------------------------")
 
 print("A* Search(euclidean)")
 start = time.time()
-asearch(G, Dist, Cost, START_NODE, GOAL_NODE, Coord, euclidean)
+astar(G, Dist, Cost, START_NODE, GOAL_NODE, Coord, euclidean)
 print(f"time taken: {time.time() - start}")
 print("---------------------------------")
 
 print("A* Search(manhattan)")
 start = time.time()
-asearch(G, Dist, Cost, START_NODE, GOAL_NODE, Coord, manhattan)
+astar(G, Dist, Cost, START_NODE, GOAL_NODE, Coord, manhattan)
 print(f"time taken: {time.time() - start}")
 print("---------------------------------")
 
@@ -237,24 +241,24 @@ print("---------------------------------")
 
 print("A* Search with energy limit")
 start = time.time()
-asearch_budget(G, Dist, Cost, START_NODE, GOAL_NODE, ENERGY_LIMIT, Coord,1,haversine)
+astar_budget(G, Dist, Cost, START_NODE, GOAL_NODE, ENERGY_LIMIT, Coord, 1, haversine)
 print(f"time taken: {time.time() - start}")
 print("---------------------------------")
 
 print("A* Search with energy limit (0.8)")
 start = time.time()
-asearch_budget(G, Dist, Cost, START_NODE, GOAL_NODE, ENERGY_LIMIT, Coord,0.8,haversine)
+astar_budget(G, Dist, Cost, START_NODE, GOAL_NODE, ENERGY_LIMIT, Coord, 0.8, haversine)
 print(f"time taken: {time.time() - start}")
 print("---------------------------------")
 
 print("A* Search with energy limit(0.6)")
 start = time.time()
-asearch_budget(G, Dist, Cost, START_NODE, GOAL_NODE, ENERGY_LIMIT, Coord,0.6,haversine)
+astar_budget(G, Dist, Cost, START_NODE, GOAL_NODE, ENERGY_LIMIT, Coord, 0.6, haversine)
 print(f"time taken: {time.time() - start}")
 print("---------------------------------")
 
 print("A* Search with energy limit(0.4)")
 start = time.time()
-asearch_budget(G, Dist, Cost, START_NODE, GOAL_NODE, ENERGY_LIMIT, Coord,0.4,haversine)
+astar_budget(G, Dist, Cost, START_NODE, GOAL_NODE, ENERGY_LIMIT, Coord, 0.4, haversine)
 print(f"time taken: {time.time() - start}")
 print("---------------------------------")
