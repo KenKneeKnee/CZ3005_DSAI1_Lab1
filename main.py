@@ -24,7 +24,7 @@ def ucs(graph, dist, energy, start, goal):
             goal_path = '->'.join(goal_path)
             print(
                 f"Shortest path: {goal_path}.\n\nShortest distance: {goal_distance}.\nTotal energy cost: {goal_e_cost}. "
-                f"\nExplored Nodes: {count}")
+                f"\nNodes added in search space: {count}")
             return
         for node in graph[curr_node]:  # expand nodes, eg: curr_node = 1
             if node not in explored:
@@ -52,7 +52,7 @@ def asearch(graph, dist, energy, start, goal, coords, heuristic):
             goal_path = '->'.join(goal_path)
             print(
                 f"Shortest path: {goal_path}.\n\nShortest distance: {goal_distance}.\nTotal energy cost: {goal_e_cost}. "
-                f"\nExplored Nodes: {count}")
+                f"\nNodes added in search space: {count}")
             return
         for node in graph[curr_node]:
             if node not in explored:
@@ -79,7 +79,7 @@ def ucs_budget(graph, dist, energy, start, goal, budget):
             goal_path = '->'.join(goal_path)
             print(
                 f"Shortest path: {goal_path}.\n\nShortest distance: {goal_distance}.\nTotal energy cost: {e_cost}. "
-                f"\nExplored Nodes: {count}")
+                f"\nNodes added in search space: {count}")
             return
         for node in graph[curr_node]:
             if node not in explored:
@@ -96,7 +96,7 @@ def ucs_budget(graph, dist, energy, start, goal, budget):
 
 
 # For task 3
-def asearch_budget(graph, dist, energy, start, goal, budget, coords,hw, heuristic):
+def asearch_budget(graph, dist, energy, start, goal, budget, coords, hw, heuristic):
     count = 0
     goal_coord = coords[goal]
     q = PriorityQueue()
@@ -111,7 +111,7 @@ def asearch_budget(graph, dist, energy, start, goal, budget, coords,hw, heuristi
             goal_path = '->'.join(goal_path)
             print(
                 f"Shortest path: {goal_path}.\n\nShortest distance: {goal_distance}.\nTotal energy cost: {e_cost}. "
-                f"\nExplored Nodes: {count}")
+                f"\nNodes added in search space: {count}")
             return
         for node in graph[curr_node]:
             if node not in explored:
@@ -176,7 +176,7 @@ def haversine(coord1, coord2):
         acos(sin(lat1) * sin(lat2) + cos(lat1) * cos(lat2) * cos(lon1 - lon2))
     )
 
-# returns the manhattan distance between two coordinates on Earth
+# returns the manhattan distance between two points
 def manhattan(coord1, coord2):
     (lon1,lat1) = coord1
     (lon2,lat2) = coord2
